@@ -4,23 +4,13 @@ from pandas import Timestamp
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
+from multiprocessing import Pool
 
-#---------------------------------------------------------------------------------
-#Goes through subjects folder and creates a folder in processed_data for each one
-#makes 4 figs each, x.png, y.png, z.png and speed.png
-#----------------------------------------------------------------------------------
+FOLDER_NAME = "subjects" #replace with subjects when ready for full run
+#FOLDER_NAME = "test1"
 
-#get folder and creates array that holds all csv files inside
-pathName = "subjects" #replace with subjects when ready for full run
-#pathName = "test1"
-numFiles = []
-fileNames = os.listdir(pathName)
-for fileNames in fileNames:
-    if fileNames.endswith(".csv"):
-        numFiles.append(fileNames)
 
-#for each csv make new folder and make figures
-for i in numFiles:
+def create_plots(i):
     newfolder = "processed_data/"+i
     os.mkdir(newfolder)
 
@@ -28,7 +18,7 @@ for i in numFiles:
     dateparse = lambda x: datetime.strptime(x[:-6], "%Y-%m-%d %H:%M:%S.%f")
 
     #open csv
-    df = pd.read_csv((os.path.join(pathName, i)), parse_dates=['loggingTime.txt.'], date_parser=dateparse)
+    df = pd.read_csv((os.path.join(FOLDER_NAME, i)), parse_dates=['loggingTime.txt.'], date_parser=dateparse)
 
     #timestamp formatting
     df['loggingTime.txt.'] = df['loggingTime.txt.'].apply(lambda x: x.timestamp())
@@ -72,3 +62,16 @@ for i in numFiles:
 
 
     #plt.show()
+
+#---------------------------------------------------------------------------------
+#Goes through subjects folder and creates a folder in processed_data for each one
+#makes 4 figs each, x.png, y.png, z.png and speed.png
+#----------------------------------------------------------------------------------
+
+#get folder and creates array that holds all csv files inside
+numFiles = [f for f in os.listdir(FOLDER_NAME) if f.endswith('.csv')]
+
+#for each csv make new folder and make figures
+N_PROCESSES = 4
+with Pool(N_PROCESSES) as pool:
+    pool.map(create_plots, numFiles)
