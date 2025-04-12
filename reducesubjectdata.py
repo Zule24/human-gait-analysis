@@ -20,7 +20,7 @@ RELEVANT_COLS = ["loggingTime.txt.",
 
 def reduce_cols_in_file(filename):
     file_path = os.path.join(FOLDER, filename)
-    pd.read_csv(file_path)[RELEVANT_COLS].to_csv(file_path)
+    pd.read_csv(file_path)[RELEVANT_COLS].to_csv(file_path, encoding='utf-8')
     print("reduced columns for " + filename)
 
 # Make sure the folder exists

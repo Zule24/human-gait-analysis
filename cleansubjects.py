@@ -15,7 +15,7 @@ def remove_rename_csvs():
     for filename in os.listdir(FOLDER):
         # Check for 's2' or 'lw' in the filename to remove
         file_path = os.path.join(FOLDER, filename)
-        if "s2" in filename.lower() or "lw" in filename.lower():
+        if 'rp-s1' not in filename.lower():
             try:
                 if os.path.isfile(file_path):
                     os.remove(file_path)
